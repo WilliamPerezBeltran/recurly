@@ -7,6 +7,6 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "app/**/*.{rb}": "rubocop -a"
+    "app/**/*.{rb}": "rubocop -A"
   }
 }
