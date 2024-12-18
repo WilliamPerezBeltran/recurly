@@ -35,6 +35,3 @@ bin/finish-interview.sh
 ### Thank You
 
 Thank you for your time completing this interview!
-
-
-"PT2: Enhanced Format"

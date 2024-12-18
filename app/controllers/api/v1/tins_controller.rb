@@ -20,12 +20,17 @@ module Api::V1
 		 private
 
 		def preprocess_params
-		      @abn = params[:abn].delete(' ')
-		      @country_code = params[:country_code]
-		      @tin_number = params[:tin_number]
+	      case action_name
+	      when 'validation_tin'
+	        @country_code = params[:country_code]
+	        @tin_number = params[:tin_number]
+	      when 'validate_abn'
+	        @abn = normalize_abn(params[:abn])
+	      end
+  end
+
+	 def normalize_abn(abn)
+	        abn.delete(' ')
   end
 	end
 end
-
-
-
