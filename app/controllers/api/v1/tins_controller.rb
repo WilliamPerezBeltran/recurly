@@ -3,7 +3,8 @@ require 'pry'
 module Api::V1
 	class TinsController < ApplicationController
 		def validationTin 
-			validationService  = TinValidationService.new(params[:country_code],params[:tin_number])
+			tinInstance = Tin.new(params[:country_code],params[:tin_number])
+			validationService  = TinValidationService.new(tinInstance.country,tinInstance.tin)
 			result = validationService.validate 
 			render json: result
 		end
