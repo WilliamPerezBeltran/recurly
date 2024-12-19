@@ -5,18 +5,18 @@
 module AbnResponse
   # This methods are responsibles for validation response.
 
-  def valid_response(valid, tin_type, country_code, tin_number)
+  def valid_response(_valid, _tin_type, _country_code, _tin_number)
     {
       properties: {
         business_registration: {
           type: 'Boolean',
-          properties:{
-            name:{
-              type: "string"
+          properties: {
+            name: {
+              type: 'string'
             },
-            address:{
-              type: "string"
-            },
+            address: {
+              type: 'string'
+            }
           }
         }
       }

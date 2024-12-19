@@ -2,13 +2,11 @@
 
 require 'rexml/document'
 
-
 module Api
   module V1
     # This class is responsible for validating ABN numbers.
     class ValidateAbn
-
-      API_BASE = "http://localhost:8080/"
+      API_BASE = 'http://localhost:8080/'
 
       def initialize(abn)
         @abn = abn
@@ -30,32 +28,25 @@ module Api
         { valid: (@abn.sum % 89).zero?, errors: [] }
       end
 
-			def validate_gst_status
-        begin
-          xml_data = Net::HTTP.get(
-            URI("#{API_BASE}queryABN?abn=#{@abn}")
-            )
+      def validate_gst_status
+        xml_data = Net::HTTP.get(URI("#{API_BASE}queryABN?abn=#{@abn}"))
         document = REXML::Document.new(xml_data)
 
         status = document.elements['//abn_response/response/businessEntity/status'].text
         gst = document.elements['//abn_response/response/businessEntity/goodsAndServicesTax'].text
 
-        if status == "Active " && gst == "true"
-          return {valid: true, errors: [] }
+        if status == 'Active ' && gst == 'true'
+          { valid: true, errors: [] }
         else
-					@errors << "Status invalid" if status != "Active"
-					@errors << "GST unregistered" if gst == "false"
+          @errors << 'Status invalid' if status != 'Active'
+          @errors << 'GST unregistered' if gst == 'false'
 
-          return {valid: false, errors: @errors }
+          { valid: false, errors: @errors }
         end
-
-				rescue StandardError => e
-					@errors << "Error fetching data about the business regardless ABN provided"
-          return {valid: false, errors: @errors }
-
-				end
-
-			end
+      rescue StandardError
+        @errors << 'Error fetching data about the business regardless ABN provided'
+        { valid: false, errors: @errors }
+      end
 
       private
 
