@@ -214,7 +214,7 @@ describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With va
 			      },
 			      "tin_number" => {
 			        "type" => "string",
-			        "value" => "10+120+000+004" # Ajustar aquí
+			        "value" => "10+120+000+004" 
 			      },
 			      "errors" => {
 			        "type" => "array",

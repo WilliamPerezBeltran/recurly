@@ -29,6 +29,7 @@ module RailsApi
     config.autoload_lib(ignore: %w(assets tasks))
     config.autoload_paths += %W(#{config.root}/app/lib)
     config.autoload_paths += %W(#{config.root}/app/services)
+    config.autoload_paths += %W(#{config.root}/app/model)
 
     # Configuration for the application, engines, and railties goes here.
     #

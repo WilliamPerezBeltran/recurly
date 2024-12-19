@@ -14,7 +14,6 @@ module Api
 
       def validate
         matches = { AU: [:au_abn, :au_acn], CA: [:ca_gst], IN: [:in_gst] }.freeze
-        # validate_country_name(@country_code.to_sym)
 
         unless TIN_FORMAT_RULES.keys.include?(@country_code.to_sym)
           @errors << ['ISO-3166 is not valid (country name is not valid)']
