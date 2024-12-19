@@ -241,7 +241,7 @@ describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With va
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to eq({
           "valid" => true,
-          "error" => "ABN is valid."
+          "message" => "ABN is valid."
         })
       end
     end

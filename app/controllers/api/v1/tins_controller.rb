@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'pry'
+require "net/http"
 
 module Api
   module V1
     class TinsController < ApplicationController
+			
+			
       include TinValidationResponse
       before_action :preprocess_params, only: [:validation_tin, :validate_abn]
 
@@ -27,16 +30,24 @@ module Api
       end
 
       def validate_abn
-        validate_abn = ValidateAbn.new(@abn)
-        result = validate_abn.validate
+        #{:validate_gst_status=>false, :errors=>["GST unregistered"]}
 
-        if result[:valid]
-        	render json: { valid: result[:valid], error: 'ABN is valid.'  }, status: :ok
+
+        abnInstance = ValidateAbn.new(@abn)
+        validation = abnInstance.validate
+        validation_gst = abnInstance.validate_gst_status
+        # binding.pry
+
+
+        if validation[:valid] && validation_gst[:valid]
+        	render json: { valid: validation[:valid], message: 'ABN is valid'  }, status: :ok
         else
-        	render json: { valid: result[:valid], error: result[:error]   }, 
-                status: :unprocessable_entity
+        	render json: { valid: validation[:valid], errors: validation[:errors].concat(validation_gst[:errors])}, status: :unprocessable_entity
+          # render json: { valid: validation[:valid], errors: validation[:errors]+ validation_gst[:errors]}, status: :unprocessable_entity
         end
       end
+
+			
 
       private
 
@@ -56,3 +67,6 @@ module Api
     end
   end
 end
+
+
+
