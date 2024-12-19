@@ -28,6 +28,7 @@ module RailsApi
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
     config.autoload_paths += %W(#{config.root}/app/lib)
+    config.autoload_paths += %W(#{config.root}/app/services)
 
     # Configuration for the application, engines, and railties goes here.
     #

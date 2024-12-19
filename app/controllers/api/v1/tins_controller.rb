@@ -31,7 +31,7 @@ module Api
         result = validate_abn.validate
 
         if result[:valid]
-        	render json: { valid: result[:valid], error: 'TIN is valid.'  }, status: :ok
+        	render json: { valid: result[:valid], error: 'ABN is valid.'  }, status: :ok
         else
         	render json: { valid: result[:valid], error: result[:error]   }, 
                 status: :unprocessable_entity

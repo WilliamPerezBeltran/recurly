@@ -41,7 +41,7 @@ module Api
             unless validate_length(value[:format], value[:length])
               @errors << 'Error in format length'
             end
-            return { valid: false, tin_type: key, country_code: @country_code, tin_number: @tin_number, errors: @errors }
+            return { valid: false, tin_type: key, errors: @errors }
           end
         end
       end

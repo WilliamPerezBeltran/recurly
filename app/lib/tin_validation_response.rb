@@ -27,7 +27,7 @@ module TinValidationResponse
         errors: {
           type: 'array',
           items: [],
-          message: 'Tin is valid'
+          message: ''
         }
 
       }
