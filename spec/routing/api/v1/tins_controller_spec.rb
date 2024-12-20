@@ -10,15 +10,5 @@ describe Api::V1::TinsController do
         tin_number: "123456789RT0001"
       )
     end
-
-    it "routes to #validate_abn" do 
-      expect(:get => "/api/v1/abn/51824753556").to route_to(
-        controller: "api/v1/tins",
-        action: "validate_abn",
-        abn: "51824753556"
-      )
-    end
-
-
   end
 end

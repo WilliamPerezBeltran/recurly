@@ -5,7 +5,7 @@ module TinRules
     AU: {
       au_abn: {
         format: 'NN NNN NNN NNN',
-        regex: /^\d{2} \d{3} \d{3} \d{3}$/,
+        regex: /^\d{2}\s\d{3}\s\d{3}\s\d{3}$|^\d{11}$/,
         length: 11
       },
       au_acn: {

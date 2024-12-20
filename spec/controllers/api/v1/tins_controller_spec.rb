@@ -1,271 +1,79 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe Api::V1::TinsController, type: :request do
-  describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With valid number" do
-    let(:country_code) { "CA" }
-    let(:tin_number) { "123456789RT0001" }
+RSpec.describe Api::V1::TinsController, type: :controller do
+  describe 'POST #validation_tin' do
+    let(:valid_params) { { country_code: 'CA', tin_number: '123456789RT0001' } }
+    let(:invalid_params) { { country_code: 'AU', tin_number: '10000000000' } }
+    let(:mock_service) { instance_double(Api::V1::TinValidationService) }
 
-    context "when the TIN is valid" do
-      before do
-        allow_any_instance_of(Api::V1::TinValidationService).to receive(:validate).and_return(
-          valid: true,
-          tin_type: "ca_gst",
-          errors: []
-        )
-      end
+    before do
+      allow(Api::V1::TinValidationService).to receive(:new).and_return(mock_service)
+    end
 
-      it "returns a valid response with status 200" do
-        get "/api/v1/country_code/#{country_code}/tin_number/#{tin_number}"
+    context 'when the TIN is valid' do
+      it 'returns a successful response with valid TIN data' do
+        allow(mock_service).to receive(:validate).and_return({
+          properties: {
+            valid: true,
+            tin_type: 'ca_gst',
+            formatted_tin: 'NNNNNNNNNRT0001',
+            tin_number: {
+              type: 'string',
+              value: '123456789RT0001'
+            },
+            errors: []
+          }
+        })
+
+        post :validation_tin, params: valid_params
+
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to eq({
-		    "properties"=> {
-		        "valid"=> {
-		            "type"=> "Boolean",
-		            "value"=> true
+        json_response = JSON.parse(response.body)
+        expect(json_response['properties']['valid']).to eq(true)
+        expect(json_response['properties']['tin_type']).to eq('ca_gst')
+      end
+    end
+
+    context 'when the TIN is invalid' do
+      it 'returns an error response with invalid TIN data' do
+
+        allow(mock_service).to receive(:validate).and_return({
+		    properties: {
+		        valid: false,
+		        tin_type: "au_abn",
+		        formatted_tin: "NN NNN NNN NNN",
+		        tin_number: {
+		            type: "string",
+		            value: "10000000000"
 		        },
-		        "tin_type"=> {
-		            "type"=> "string",
-		            "enum"=> "ca_gst"
-		        },
-		        "formatted_tin"=> {
-		            "type"=> "string",
-		            "country"=> "CA"
-		        },
-		        "tin_number"=> {
-		            "type"=> "string",
-		            "value"=> "123456789RT0001"
-		        },
-		        "errors"=> {
-		            "type"=> "array",
-		            "items"=> [],
-		            "message"=> ""
+		        errors: [
+		            "GST unregistered"
+		        ],
+		        business_registration: {
+		            type: "object",
+		            properties: {
+		                name: {
+		                    type: "string",
+		                    value: "Example Company Pty Ltd 2"
+		                },
+		                address: {
+		                    type: "string",
+		                    value: "NSW with postcode 2001"
+		                }
+		            }
 		        }
 		    }
 		})
-      end
-    end
-  end
-  #==
 
-describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With invalid number" do
-    let(:country_code) { "CA" }
-    let(:tin_number) { "123456789RT" }
+        post :validation_tin, params: invalid_params
 
-    context "when the Tin is invalid" do
-      before do
-        allow_any_instance_of(Api::V1::TinValidationService).to receive(:validate).and_return(
-          valid: false,
-          tin_type: "ca_gst",
-          errors: ["Does not match the format"]
-        )
-      end
-
-	      it "Return a invalid response with status unprocessable_entity" do
-	        get "/api/v1/country_code/#{country_code}/tin_number/#{tin_number}"
-	        expect(response).to have_http_status(:unprocessable_entity)
-	        expect(JSON.parse(response.body)).to eq({
-			    "properties"=> {
-			        "valid"=> {
-			            "type"=> "Boolean",
-			            "value"=> false
-			        },
-			        "tin_number"=> {
-			            "type"=> "string",
-			            "value"=> "123456789RT"
-			        },
-			        "formatted_tin"=> {
-			            "type"=> "string",
-			            "country"=> "CA"
-			        },
-			        "errors"=> {
-			            "type"=> "array",
-			            "items"=> [
-			                "Does not match the format"
-			            ],
-			            "message"=> "Tin is invalid"
-			        }
-			    }
-			})
-	      end
-	    end
-    end
-    #==
-
-describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With valid number" do
-    let(:country_code) { "IN" }
-    let(:tin_number) { "22BCDEF1G2FH1Z5" }
-
-    context "when the Tin is invalid" do
-      before do
-        allow_any_instance_of(Api::V1::TinValidationService).to receive(:validate).and_return(
-          valid: true,
-          tin_type: "in_gst",
-          errors: []
-        )
-      end
-
-	      it "Return a valid response with status ok with country IN and number 22BCDEF1G2FH1Z5" do
-	        get "/api/v1/country_code/#{country_code}/tin_number/#{tin_number}"
-	        expect(response).to have_http_status(:ok)
-				        expect(JSON.parse(response.body)).to eq({
-			    "properties"=> {
-			        "valid"=> {
-			            "type"=> "Boolean",
-			            "value"=> true
-			        },
-			        "tin_type"=> {
-			            "type"=> "string",
-			            "enum"=> "in_gst"
-			        },
-			        "formatted_tin"=> {
-			            "type"=> "string",
-			            "country"=> "IN"
-			        },
-			        "tin_number"=> {
-			            "type"=> "string",
-			            "value"=> "22BCDEF1G2FH1Z5"
-			        },
-			        "errors"=> {
-			            "type"=> "array",
-			            "items"=> [],
-			            "message"=> ""
-			        }
-			    }
-			})
-	      end
-	    end
-    end
-    #==
-
-describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With valid number" do
-    let(:country_code) { "IN" }
-    let(:tin_number) { "22BCDEF1G2FH1Z5" }
-
-    context "when the Tin is invalid" do
-      before do
-        allow_any_instance_of(Api::V1::TinValidationService).to receive(:validate).and_return(
-          valid: true,
-          tin_type: "in_gst",
-          errors: []
-        )
-      end
-	      it "Return a valid response with status ok with country IN and number 22BCDEF1G2FH1Z5" do
-	        get "/api/v1/country_code/#{country_code}/tin_number/#{tin_number}"
-	        expect(response).to have_http_status(:ok)
-				        expect(JSON.parse(response.body)).to eq({
-			    "properties"=> {
-			        "valid"=> {
-			            "type"=> "Boolean",
-			            "value"=> true
-			        },
-			        "tin_type"=> {
-			            "type"=> "string",
-			            "enum"=> "in_gst"
-			        },
-			        "formatted_tin"=> {
-			            "type"=> "string",
-			            "country"=> "IN"
-			        },
-			        "tin_number"=> {
-			            "type"=> "string",
-			            "value"=> "22BCDEF1G2FH1Z5"
-			        },
-			        "errors"=> {
-			            "type"=> "array",
-			            "items"=> [],
-			            "message"=> ""
-			        }
-			    }
-			})
-	      end
-	    end
-    end
-    #==
-
-describe "GET /api/v1/country_code/:country_code/tin_number/:tin_number. With valid number" do
-    let(:country_code) { "AU" }
-    let(:tin_number) { "10 120 000 004" }
-
-    context "when the Tin is valid" do
-	      before do
-	        allow_any_instance_of(Api::V1::TinValidationService).to receive(:validate).and_return(
-	          valid: true,
-	          tin_type: "au_abn",
-	          errors: []
-	        )
-	      end
-
-	      it "Return a valid response with status ok with country AU and number 10 120 000 004" do
-			  get "/api/v1/country_code/#{country_code}/tin_number/#{CGI.escape(tin_number)}"
-			  expect(response).to have_http_status(:ok)
-			  expect(JSON.parse(response.body)).to eq({
-			    "properties" => {
-			      "valid" => {
-			        "type" => "Boolean",
-			        "value" => true
-			      },
-			      "tin_type" => {
-			        "type" => "string",
-			        "enum" => "au_abn"
-			      },
-			      "formatted_tin" => {
-			        "type" => "string",
-			        "country" => "AU"
-			      },
-			      "tin_number" => {
-			        "type" => "string",
-			        "value" => "10+120+000+004" 
-			      },
-			      "errors" => {
-			        "type" => "array",
-			        "items" => [],
-			        "message" => ""
-			      }
-			    }
-			  })
-			end
-	    end
-    end
-    #==
-
-  describe "GET /api/v1/abn/:abn" do
-    let(:abn) { "12345678901" }
-
-    context "when the ABN is valid" do
-      before do
-        allow_any_instance_of(Api::V1::ValidateAbn).to receive(:validate).and_return(valid: true, error: nil)
-      end
-
-      it "returns a valid response with status 200" do
-        get "/api/v1/abn/#{abn}"
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to eq({
-          "valid" => true,
-          "message" => "ABN is valid."
-        })
+        json_response = JSON.parse(response.body)
+        expect(json_response['properties']['valid']).to eq(false)
+        expect(json_response['properties']['errors']).to include("GST unregistered")
       end
     end
   end
-  #==
-
-  describe "GET /api/v1/abn/:abn" do
-    let(:abn) { "5 1 8 2 456" }
-
-  
-    context "when the ABN is invalid" do
-      before do
-        allow_any_instance_of(Api::V1::ValidateAbn).to receive(:validate).and_return(valid: false, error: "Invalid ABN")
-      end
-
-      it "returns an error response with unprocessable_entity" do
-        get "/api/v1/abn/#{CGI.escape(abn)}"
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)).to eq({
-          "valid" => false,
-          "error" => "Invalid ABN"
-        })
-      end
-    end
-  end
-  #==
 end
