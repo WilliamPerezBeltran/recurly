@@ -15,6 +15,7 @@ gem "puma", ">= 5.0"
 gem "tzinfo-data"
 gem 'pry', '~> 0.15.0'
 gem 'rexml', '~> 3.2', '>= 3.2.4'
+gem 'json-schema' 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug"

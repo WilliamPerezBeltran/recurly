@@ -45,3 +45,4 @@ rubocop -a app/
 ```
 
 
+https://github.com/voxpupuli/json-schema/
