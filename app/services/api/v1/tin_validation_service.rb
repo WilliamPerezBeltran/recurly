@@ -5,7 +5,7 @@ module Api
     # This class is responsible for validating number.
     class TinValidationService
       include TinRules
-      include Responde
+      # include Responde
       API_BASE = "http://localhost:8080/"
 
       def initialize(country_code, tin_number)
