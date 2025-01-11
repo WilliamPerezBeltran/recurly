@@ -46,3 +46,6 @@ rubocop -a app/
 
 
 https://github.com/voxpupuli/json-schema/
+
+
+rvm use system && rbenv local 3.3.0 && rbenv version

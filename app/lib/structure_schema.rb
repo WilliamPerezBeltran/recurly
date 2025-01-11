@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module StructureSchema
+
   SCHEMA = {
+    "type" => "object",
+    "required" => ["valid", "tin_type", "formatted_tin", "errors"],
     "properties" => {
       "valid" => {
         "type" => "boolean"
@@ -20,7 +23,8 @@ module StructureSchema
         }
       }
     }
-  }.freeze
+  }
+
 
   SCHEMA_2 = {
     "properties" => {
@@ -36,12 +40,13 @@ module StructureSchema
         }
       }
     }
-  }.freeze
-
+  }
+  # parameter normal or business
   def self.get_schema_structure(inst = "normal")
     schema_copy = SCHEMA.dup
 
     if inst == "business"
+      schema_copy["required"].push("business_registration")
       schema_copy["properties"]["business_registration"] = SCHEMA_2["properties"]["business_registration"]
     end
 

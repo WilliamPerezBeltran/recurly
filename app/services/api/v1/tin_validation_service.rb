@@ -13,45 +13,70 @@ module Api
         @tin_number = tin_number
         @errors = []
       end
+			# == Schema Information
+#
+# Table name: rules
+#
+#  id         :integer          not null, primary key
+#  country    :string
+#  tin_type   :string
+#  tin_name   :string
+#  format     :string
+#  example    :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
 
       def validate
+
+        
+          binding.pry
+      Rule.where(iso:@country_code.downcase)
+				
+			end
+				
+
+				Rule.all.each do |country|
+					
+
+				end
         matches = { AU: [:au_abn, :au_acn], CA: [:ca_gst], IN: [:in_gst] }.freeze
 
-        unless TIN_FORMAT_RULES.keys.include?(@country_code.to_sym)
-          @errors << ["ISO-3166 is not valid (country name is not valid)"]
-          return responde(false, "", "", @tin_number, @errors)
-        end
+        # unless TIN_FORMAT_RULES.keys.include?(@country_code.to_sym)
+        #   @errors << ["ISO-3166 is not valid (country name is not valid)"]
+        #   return responde(false, "", "", @tin_number, @errors)
+        # end
 
-        TIN_FORMAT_RULES[@country_code.to_sym].each do |key, value|
-          next unless matches[@country_code.to_sym].include?(key)
+        # TIN_FORMAT_RULES[@country_code.to_sym].each do |key, value|
+          # next unless matches[@country_code.to_sym].include?(key)
 
-          if @country_code == "AU"
-            TIN_FORMAT_RULES[:AU].each do |key, rule|
-              if validate_format(@tin_number, rule[:regex]) && validate_length(rule[:format], rule[:length])
-                  if rule[:format] == "NN NNN NNN NNN" && validate_algorithm?
-                     data = validate_gst_status
-                     if data[:invalid_document]
-                        return responde(!data[:invalid_document], "au_abn", rule[:format], @tin_number, data[:errors])
-                     end
+          # if @country_code == "AU"
+          #   TIN_FORMAT_RULES[:AU].each do |key, rule|
+          #     if validate_format(@tin_number, rule[:regex]) && validate_length(rule[:format], rule[:length])
+          #         if rule[:format] == "NN NNN NNN NNN" && validate_algorithm?
+          #            data = validate_gst_status
+          #            if data[:invalid_document]
+          #               return responde(!data[:invalid_document], "au_abn", rule[:format], @tin_number, data[:errors])
+          #            end
                      
-                     obj = { organisation_name: data[:organisation_name], address: data[:address], errors: data[:errors] }
+          #            obj = { organisation_name: data[:organisation_name], address: data[:address], errors: data[:errors] }
 
-                     return responde_gsp(data[:valid_tin_gst], key, rule[:format], @tin_number, obj)
-                  end
-                  return responde(true, key, rule[:format], @tin_number, @errors)
-              end
-            end
-          end
-          if validate_length(value[:format], value[:length]) && validate_format(@tin_number, value[:regex])
-          return responde(true, key,  value[:format], @tin_number, @errors)   
+          #            return responde_gsp(data[:valid_tin_gst], key, rule[:format], @tin_number, obj)
+          #         end
+          #         return responde(true, key, rule[:format], @tin_number, @errors)
+          #     end
+          #   end
+          # end
+          # if validate_length(value[:format], value[:length]) && validate_format(@tin_number, value[:regex])
+          #   return responde(true, key,  value[:format], @tin_number, @errors)   
 
-          else
-          def handle_invalid_tin(key, value)
-            validate_format_and_length(value)
-            responde(false, key, value[:format], @tin_number, @errors)
-          end
-          end
-        end
+          # else
+          #   def handle_invalid_tin(key, value)
+          #     validate_format_and_length(value)
+          #     responde(false, key, value[:format], @tin_number, @errors)
+          #   end
+          # end
+        # end
       end
 
       def validate_algorithm?
