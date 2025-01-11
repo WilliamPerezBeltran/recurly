@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_27_030155) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_11_040751) do
   create_table "rules", force: :cascade do |t|
     t.string "country"
     t.string "tin_type"
@@ -21,6 +21,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_27_030155) do
     t.datetime "updated_at", null: false
     t.string "iso"
     t.integer "format_length"
+    t.string "regex_pattern"
+    t.string "replacement"
   end
 
 end

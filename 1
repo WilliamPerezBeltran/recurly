@@ -10,10 +10,14 @@ module Api
 
       def validation_tin
 				
-        tin_instance = Tin.new(@country_code, @tin_number)
-        validation_service = TinValidationService.new(tin_instance.country, tin_instance.tin)
-        result = validation_service.validate_format?
-        render json: result 
+				#binding.pry
+				Rule.all.each do |item|
+					p item 
+        end
+        # tin_instance = Tin.new(@country_code, @tin_number)
+        # validation_service = TinValidationService.new(tin_instance.country, tin_instance.tin)
+        # result = validation_service.validate
+        # render json: result 
         
 
 
@@ -27,8 +31,8 @@ module Api
       def preprocess_params
         case action_name
         when 'validation_tin'
-					@country_code = params[:country_code].downcase
-          @tin_number = params[:tin_number].strip.gsub(" ", "")
+          @country_code = params[:country_code]
+          @tin_number = params[:tin_number]
         end
       end
     end
