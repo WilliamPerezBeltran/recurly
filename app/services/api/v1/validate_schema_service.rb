@@ -17,7 +17,6 @@ module Api
         return false unless TYPE.include?(@type)
 
         structure = StructureSchema.get_schema_structure(@type)
-        p structure
         JSON::Validator.validate(structure, @data_schema)
       end
     end
