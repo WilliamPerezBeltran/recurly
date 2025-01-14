@@ -2,6 +2,8 @@
 
 module Api
   module V1
+    # validate schema
+    # ValidateSchemaService
     class ValidateSchemaService
       include StructureSchema
       attr_accessor :data_schema, :type

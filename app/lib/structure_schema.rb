@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# indicates the strtuctre schema it require to use
 module StructureSchema
   @schema = {
     'type' => 'object',
