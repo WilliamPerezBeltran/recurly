@@ -1,11 +1,7 @@
-# frozen_string_literal: true
-
 module Api
   module V1
     # This class is responsible for validating number.
     class TinValidationService
-      include TinRules
-      # include Responde
       API_BASE = "http://localhost:8080/"
 
       def initialize(country_code, tin_number)

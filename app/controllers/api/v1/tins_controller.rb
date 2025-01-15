@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'net/http'
 require 'pry'
 
@@ -44,8 +42,6 @@ module Api
       end
 
       private
-
-    
 
       def preprocess_params
         case action_name

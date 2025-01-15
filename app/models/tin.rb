@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Represents a Tax Identification Number (TIN) for a specific country.
 class Tin
   attr_accessor :country, :tin, :errors
