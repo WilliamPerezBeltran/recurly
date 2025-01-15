@@ -7,41 +7,45 @@ module Api
       before_action :preprocess_params, only: [:validation_tin]
 
       def validation_tin
-        if Rule.where(iso: @country_code) == []
-          data = { valid: false, tin_type: nil, formatted_tin: @tin_number, 
-                   errors: ['Invalid country code'] }
-          render json: data
+        unless Rule.exists?(iso: @country_code)
+          render json: invalid_country_response
           return 
         end
 
         tin_instance = Tin.new(@country_code, @tin_number)
         obj_selected = tin_instance.select_tin
         
-        validation_service = TinValidationService.new(tin_instance.country, tin_instance.tin)
-        format_ = validation_service.validate_format?
-        errors = validation_service.errors
+        validation = TinValidationService.new(tin_instance.country, tin_instance.tin)
+        errors = validation.errors
 
-        obj_is_valid = format_ 
+        obj_response = ResponseBuilderService.new(validation.validate_format?,obj_selected[:tin_type],obj_selected[:tin_given],errors)
 
-        data = { valid: obj_is_valid, tin_type: obj_selected[:tin_type], 
-                 formatted_tin: obj_selected[:tin_given], errors: errors }
-
-        if obj_selected[:iso] == 'au' && @tin_number.length == 11 && data[:valid] 
-          validate_algorithm_ = validation_service.validate_algorithm?
-          obj_algorithm = validation_service.validate_gst_status
-          obj_is_valid = format_ && validate_algorithm_ && obj_algorithm[:valid_tin_gst]
-
-          data[:valid] = obj_is_valid
-          data[:errors] = errors
-          data[:business_registration] = {}
-          data[:business_registration][:name] = obj_algorithm[:organisation_name]
-          data[:business_registration][:address] = obj_algorithm[:address]
+        if au_business?(tin_instance,validation)
+          obj_response.response[:valid] = validation.validate_format? && validation.validate_algorithm? && validation.validate_gst_status[:valid_tin_gst]
+          obj_response.response[:errors] = errors
+          obj_response.business({
+            name: validation.validate_gst_status[:organisation_name],
+            address: validation.validate_gst_status[:address]
+          })
         end
 
-        render json: data 
+        render json: obj_response.build 
       end
 
       private
+
+      def au_business?(tin_instance,validation)
+        tin_instance.select_tin[:iso] == 'au' && @tin_number.length == 11 && validation.validate_format?         
+      end
+
+      def invalid_country_response
+        { 
+          valid: false, 
+          tin_type: nil, 
+          formatted_tin: @tin_number,
+          errors: ['Invalid country code'] 
+        }
+      end
 
       def preprocess_params
         case action_name
