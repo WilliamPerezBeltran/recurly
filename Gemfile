@@ -15,12 +15,16 @@ gem "puma", ">= 5.0"
 gem "tzinfo-data"
 gem 'pry', '~> 0.15.0'
 gem 'rexml', '~> 3.2', '>= 3.2.4'
+gem 'json-schema' 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug"
+  gem "annotate"
   gem 'rspec-rails', '~> 6.1.0'
 	gem 'rubocop-rails', require: false
 	gem 'rubocop-performance'
 	gem 'rubocop-rspec'
 	gem 'rubocop-rake'
+	gem 'bigdecimal', '3.1.8'
+
 end

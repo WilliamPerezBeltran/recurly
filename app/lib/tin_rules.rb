@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module TinRules
   TIN_FORMAT_RULES = {
     AU: {

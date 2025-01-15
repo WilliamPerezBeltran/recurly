@@ -1,0 +1,20 @@
+normal responde 
+data = {
+  'valid' => true,
+  'tin_type' => 'au_abn',
+  'formatted_tin' => '123456789',
+  'errors' => []
+}
+
+business responde 
+data = {
+  "valid" => true,
+  "tin_type" => "ca_gst",
+  "formatted_tin" => "122-456",
+  "errors" => [],
+  "business_registration" => {
+    "name" => "My Business",
+    "address" => "122 Main St"
+  }
+}
+
