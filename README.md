@@ -1,10 +1,10 @@
-# README
+#README
 
 Recurly Exercises Test
 
-## Stack
+##Stack
 
-- **Ruby**: 3.3.0  
+- **Ruby**: 3.3.0
 - **Rails**: 7.1.5.1
 
 ## Installation
@@ -12,23 +12,23 @@ Recurly Exercises Test
 To run this project locally, follow these steps:
 
 1. **Clone the repository**:
-   ```bash
-   git clone <repository_url>
-   cd <project_directory>
-   bundle install
-   rails server
-   ```
+ ```bash
+ git clone <repository_url>
+ cd <project_directory>
+ bundle install
+ railsserver
+ ```
 
 ## Project Structure
 
 
 # General Structure of the Code
 
-## 1. Controller `TinsController`
+## 1.Controller `TinsController`
 
 This controller handles the main logic for validating a TIN. It includes a `before_action` filter to preprocess the parameters before the main action (`validation_tin`).
 
-### Actions:
+###Actions:
 - **before_action**: Preprocesses parameters before executing the validation action.
 - **validation_tin**: Main action that validates the TIN according to the established rules.
 
@@ -41,7 +41,7 @@ ActiveRecord model that represents the rules for TINs from different countries. 
 ### 2.2. `ResponseBuilderService` service
 This service builds and organizes the JSON response based on the validation result. It is responsible for structuring the information in a coherent manner to be consumed by the application or client.
 
-### 2.3. `TinValidationService` service
+### 23. `TinValidationService` service
 This service is responsible for the TIN validation logic. It performs the checks and applies the specific rules for each country or TIN type, returning whether the validation is successful or not.
 
 ### 2.4. `ValidateSchemaService` service
@@ -49,30 +49,30 @@ Validates data structures against predefined schemas. This service ensures that 
 
 
 
-# Flujo de Validación en `validation_tin`
+# Validation Flow in `validation_tin`
 
-## 1. Validación del País
-Verifica si el código de país proporcionado existe en la tabla `rules`. Si no, devuelve una respuesta JSON con un error.
+## 1. Country Validation
+Checks if the provided country code exists in the `rules` table. If not, returns a JSON response with an error.
 
-## 2. Creación de Instancias
-- Se crea un objeto `Tin` con el código de país y el número de TIN proporcionado.
-- Se selecciona el formato adecuado para ese país utilizando el método `select_tin`.
+## 2. Instance Creation
+- It is creates a `Tin` object with the country code and TIN number provided.
+- The appropriate format for that country is selected using the `select_tin` method.
 
-## 3. Validación del Formato
-Utiliza el servicio `TinValidationService` para validar el formato del TIN, asegurando que cumpla con las reglas específicas de formato para el país seleccionado.
+## 3. Format Validation
+Use the `TinValidationService` service to validate the TIN format, ensuring that it complies with the specific format rules for the selected country.
 
-## 4. Validación Adicional para Australia (AU)
-- Se valida el algoritmo del TIN para el caso específico de Australia.
-- Llama a un servicio externo (simulado en este caso) para verificar el estado del registro de bienes y servicios (GST).
+## 4. Additional Validation for Australia (AU)
+- The TIN algorithm is validated for the specific case of Australia.
+- Calls an external service ( simulated in this case) to check the status of the Goods and Services Tax (GST) registration.
 
-## 5. Respuesta
-Construye un objeto de respuesta con el `ResponseBuilderService` y lo devuelve en formato JSON, conteniendo el resultado de la validación y los mensajes correspondientes.
+## 5. Answer
+Constructs a response object with the `ResponseBuilderService` and returns it in JSON format, containing the validation result and the corresponding messages.
 
-# Main Components
+#MainComponents
 
 ## 1. `TinValidationService`
 
-### Methods:
+###Methods:
 - **validate_format?**: Validates the TIN format using regular expressions defined for each country.
 - **validate_algorithm?**: Implements an algorithm to validate Australian TIN numbers (ABN).
 - **validate_gst_status**: Calls an external service to verify the status of the TIN in the GST registry.
@@ -91,10 +91,8 @@ Exceptions are caught and error messages are added to provide a detailed respons
 ## 2. Extensibility
 The modular design, which includes services and a model for rules, allows for easy addition of validations for new countries. This ensures that the system can scale and adapt to changes or new validation regulations without complications.
 
-## 3. External API Simulation
+## 3.External API Simulation
 The `validate_gst_status` service assumes the existence of a local API to query additional information about the TIN. Although in this case the interaction with an external service is simulated, the structure is prepared to integrate with real APIs in the future.
-
-
 
 ## Running
 
