@@ -1,51 +1,37 @@
 # README
 
-Recurly exercises test.
+## Tax Identification Number Validation API
 
-## Stack
+### Ruby version
+Please use Ruby > 3.0. The project is set to use Ruby 3.3.0 by default. If you do not have that version installed, please update the ".ruby-version" file with your preferred version.
 
-- Ruby 3.3.0
-- Rails Rails 7.1.3.2
+### Test Coverage
 
-## Installation
+Please write tests using RSpec. It is already included as a dependency when you run "bundle install".
 
-To run this project locally, follow these steps:
+### Setup
 
-**Clone the repository**:
-   ```bash
-   git clone <repository_url>
-   cd <project_directory>
-   bundle install
-   rails server
-   ```
+Run the following script using your shortname to set up your working branch:
 
-## Project Structure
-
-- `app/controllers/api/v1/tins_controller.rb`: Handles the incoming requests for TIN validation.
-- `app/services/api/v1/tin_validation_service.rb`: The service responsible for validating TINs according to country-specific rules.
-- `app/models/tin.rb`: Defines the `Tin` model which represents the TIN number and country code.
-- `config/routes.rb`: Defines the routes for the TIN validation API.
-- `spec/`: Contains the test cases for controllers, models, services and routes.
-
-## Running
-
-`rails server`
-
-## Testing
-
-```
-rake spec
+```bash
+bin/setup-repo.sh <shortname>
 ```
 
-## Format and linters
+For instance, if your name is John Smith, your shortname would be jsmith.
 
+Ensure that you are ready to start by running "rails spec" or "rails s".
+
+### Next Steps
+Get started with "PT1: Basic Format" and complete as much as you can through "PT3: External Validation", in order. Have fun!
+
+### Finishing Up and Submitting Your Work
+
+Once you have completed the interview, please run the following script and submit the tarball named in the script output back to Recurly.
+
+```bash
+bin/finish-interview.sh
 ```
-Rubocop
-rubocop -a app/
-```
 
+### Thank You
 
-https://github.com/voxpupuli/json-schema/
-
-
-rvm use system && rbenv local 3.3.0 && rbenv version
+Thank you for your time completing this interview!
